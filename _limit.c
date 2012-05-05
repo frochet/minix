@@ -10,7 +10,9 @@
 
 int getrlimit(int resource, struct rlimit *rlim){
     switch (resource) {
-        case 0: _SYSCALL();
+        case 0: message m;
+                
+                _SYSCALL(PM_PROC_LIMIT,RES_LIMIT,&m);
             break;
             
         default:
