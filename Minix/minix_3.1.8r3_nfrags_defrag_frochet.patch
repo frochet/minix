@@ -1,0 +1,192 @@
+diff -urN --exclude .svn --exclude '*~' ./src_orig/include/getrlimit.h ./src/include/getrlimit.h
+--- ./src_orig/include/getrlimit.h	1970-01-01 01:00:00.000000000 +0100
++++ ./src/include/getrlimit.h	2012-05-07 10:37:54.000000000 +0200
+@@ -0,0 +1,8 @@
++#ifndef minix_system_call_Header_h
++#define minix_system_call_Header_h
++
++#include <sys/resource.h>
++
++_PROTOTYPE(	int getrlimit, (int resource, struct rlimit *rlim));
++
++#endif
+diff -urN --exclude .svn --exclude '*~' ./src_orig/include/Makefile ./src/include/Makefile
+--- ./src_orig/include/Makefile	2010-09-02 17:44:04.000000000 +0200
++++ ./src/include/Makefile	2012-05-07 09:54:20.000000000 +0200
+@@ -2,7 +2,7 @@
+ 
+ INCS=	alloca.h ansi.h a.out.h ar.h assert.h configfile.h ctype.h \
+ 	curses.h dirent.h env.h err.h errno.h fcntl.h fenv.h \
+-	float.h fnmatch.h fts.h getopt.h glob.h grp.h ifaddrs.h \
++	float.h fnmatch.h fts.h getopt.h getrlimit.h glob.h grp.h ifaddrs.h \
+ 	inttypes.h libgen.h lib.h libutil.h limits.h locale.h \
+ 	mathconst.h math.h midiparser.h netdb.h pwd.h regex.h \
+ 	regexp.h setjmp.h sgtty.h signal.h stdarg.h stddef.h \
+diff -urN --exclude .svn --exclude '*~' ./src_orig/include/minix/callnr.h ./src/include/minix/callnr.h
+--- ./src_orig/include/minix/callnr.h	2010-08-25 15:06:43.000000000 +0200
++++ ./src/include/minix/callnr.h	2012-05-06 10:08:18.000000000 +0200
+@@ -1,4 +1,4 @@
+-#define NCALLS		 113	/* number of system calls allowed */
++#define NCALLS	114	 	/* number of system calls allowed */
+ 
+ #define EXIT		   1 
+ #define FORK		   2 
+@@ -115,6 +115,7 @@
+ 
+ #define GCOV_FLUSH	112	/* flush gcov data from server to gcov files */
+ 
++#define RES_LIMIT       113 
+ #define TASK_REPLY	121	/* to VFS: reply code from drivers, not 
+ 				 * really a standalone call.
+ 				 */
+diff -urN --exclude .svn --exclude '*~' ./src_orig/lib/libc/other/_getrlimit.c ./src/lib/libc/other/_getrlimit.c
+--- ./src_orig/lib/libc/other/_getrlimit.c	1970-01-01 01:00:00.000000000 +0100
++++ ./src/lib/libc/other/_getrlimit.c	2012-05-07 11:02:52.000000000 +0200
+@@ -0,0 +1,19 @@
++#include <lib.h>
++#include <getrlimit.h>
++#include <sys/resource.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include <minix/ipc.h>
++
++PUBLIC int getrlimit(int resource, struct rlimit *rlim){
++   	printf("getrlimit est correctement appelee"); 
++	switch (resource) {
++        case 0:
++               _SYSCALL(PM_PROC_NR,RES_LIMIT,NULL); 
++            break;
++            
++        default:
++            break;
++    }
++   return 0;
++}
+Binary files ./src_orig/lib/libc/other/._getrlimit.c.swp and ./src/lib/libc/other/._getrlimit.c.swp differ
+diff -urN --exclude .svn --exclude '*~' ./src_orig/lib/libc/other/Makefile.inc ./src/lib/libc/other/Makefile.inc
+--- ./src_orig/lib/libc/other/Makefile.inc	2010-08-25 15:06:43.000000000 +0200
++++ ./src/lib/libc/other/Makefile.inc	2012-05-07 10:31:02.000000000 +0200
+@@ -19,6 +19,7 @@
+ 	_getnprocnr.c \
+ 	_getpprocnr.c \
+ 	_getprocnr.c \
++	_getrlimit.c \
+ 	_getsigset.c \
+ 	_getsysinfo.c \
+ 	_lseek64.c \
+diff -urN --exclude .svn --exclude '*~' ./src_orig/lib/libc/syscall/getrlimit.S ./src/lib/libc/syscall/getrlimit.S
+--- ./src_orig/lib/libc/syscall/getrlimit.S	1970-01-01 01:00:00.000000000 +0100
++++ ./src/lib/libc/syscall/getrlimit.S	2012-05-07 09:52:18.000000000 +0200
+@@ -0,0 +1,6 @@
++#include <machine/asm.h>
++
++IMPORT(_getrlimit)
++ENTRY(getrlimit)
++	jmp	_C_LABEL(_getrlimit)
++
+diff -urN --exclude .svn --exclude '*~' ./src_orig/lib/libc/syscall/Makefile.inc ./src/lib/libc/syscall/Makefile.inc
+--- ./src_orig/lib/libc/syscall/Makefile.inc	2010-07-15 15:24:57.000000000 +0200
++++ ./src/lib/libc/syscall/Makefile.inc	2012-05-07 09:53:02.000000000 +0200
+@@ -62,6 +62,7 @@
+ 	isatty.S \
+ 	kill.S \
+ 	killpg.S \
++	getrlimit.S	\
+ 	link.S \
+ 	lseek.S \
+ 	lseek64.S \
+diff -urN --exclude .svn --exclude '*~' ./src_orig/servers/pm/limit.c ./src/servers/pm/limit.c
+--- ./src_orig/servers/pm/limit.c	1970-01-01 01:00:00.000000000 +0100
++++ ./src/servers/pm/limit.c	2012-05-07 14:45:18.000000000 +0200
+@@ -0,0 +1,18 @@
++
++#include "pm.h"
++#include "proto.h"
++#include <signal.h> /*Just because mproc.h need it*/
++#include "mproc.h"
++#include <minix/ipc.h>
++
++PUBLIC int do_getrlimit(message *m, struct mproc *mp){
++	switch(resource){
++		case RLIMIT_NICE : 	
++		return 0;
++		break;	
++		case RLIMIT_NICE : return 0; break;	
++	}
++}
++PUBLIC int do_setrlimit(message *m,struct mproc *mp){
++    return 0;
++}
+diff -urN --exclude .svn --exclude '*~' ./src_orig/servers/pm/main.c ./src/servers/pm/main.c
+--- ./src_orig/servers/pm/main.c	2010-07-13 17:30:17.000000000 +0200
++++ ./src/servers/pm/main.c	2012-05-07 09:56:17.000000000 +0200
+@@ -128,13 +128,16 @@
+ 		else
+ 			result= ENOSYS;
+ 		break;
++	case RES_LIMIT : result = do_getrlimit(&m_in,mp);
++			if(result == 0) printf("appel systeme fonctionnel");
+ 	default:
+ 		/* Else, if the system call number is valid, perform the
+ 		 * call.
+ 		 */
+ 		if ((unsigned) call_nr >= NCALLS) {
+ 			result = ENOSYS;
+-		} else {
++                }
++		 else {
+ #if ENABLE_SYSCALL_STATS
+ 			calls_stats[call_nr]++;
+ #endif
+diff -urN --exclude .svn --exclude '*~' ./src_orig/servers/pm/Makefile ./src/servers/pm/Makefile
+--- ./src_orig/servers/pm/Makefile	2010-07-09 14:58:18.000000000 +0200
++++ ./src/servers/pm/Makefile	2012-05-05 19:38:20.000000000 +0200
+@@ -1,7 +1,7 @@
+ # Makefile for Process Manager (PM)
+ PROG=	pm
+ SRCS=	main.c forkexit.c break.c exec.c time.c alarm.c \
+-	signal.c utility.c table.c trace.c getset.c misc.c \
++	limit.c signal.c utility.c table.c trace.c getset.c misc.c \
+ 	profile.c dma.c mcontext.c schedule.c
+ 
+ DPADD+=	${LIBSYS} ${LIBTIMERS}
+diff -urN --exclude .svn --exclude '*~' ./src_orig/servers/pm/proto.h ./src/servers/pm/proto.h
+--- ./src_orig/servers/pm/proto.h	2010-07-09 14:58:18.000000000 +0200
++++ ./src/servers/pm/proto.h	2012-05-07 14:53:23.000000000 +0200
+@@ -104,3 +104,6 @@
+ _PROTOTYPE( int nice_to_priority, (int nice, unsigned *new_q)		);
+ _PROTOTYPE( int pm_isokendpt, (int ep, int *proc)			);
+ _PROTOTYPE( void tell_vfs, (struct mproc *rmp, message *m_ptr)		);
++/* limit.c */
++_PROTOTYPE( int do_getrlimit, (message *m, struct mproc *mp)            );
++_PROTOTYPE( int do_setrlimit, (message *m, struct mproc *mp) 		);
+diff -urN --exclude .svn --exclude '*~' ./src_orig/servers/pm/table.c ./src/servers/pm/table.c
+--- ./src_orig/servers/pm/table.c	2010-08-25 15:06:43.000000000 +0200
++++ ./src/servers/pm/table.c	2012-05-05 19:22:03.000000000 +0200
+@@ -125,6 +125,7 @@
+ 	do_getdma,	/* 110 = getdma */
+ 	do_srv_kill,	/* 111 = srv_kill */
+  	no_sys, 	/* 112 = gcov_flush */
++	do_getrlimit,   /* 113 = getrlimit */
+ };
+ /* This should not fail with "array size is negative": */
+ extern int dummy[sizeof(call_vec) == NCALLS * sizeof(call_vec[0]) ? 1 : -1];
+diff -urN --exclude .svn --exclude '*~' ./src_orig/servers/pm/utility.c ./src/servers/pm/utility.c
+--- ./src_orig/servers/pm/utility.c	2010-07-01 10:32:33.000000000 +0200
++++ ./src/servers/pm/utility.c	2012-05-06 11:45:40.000000000 +0200
+@@ -173,3 +173,4 @@
+ 	return _munmap_text(addrstart, len);
+ 
+ }
++
+diff -urN --exclude .svn --exclude '*~' ./src_orig/servers/vfs/table.c ./src/servers/vfs/table.c
+--- ./src_orig/servers/vfs/table.c	2010-08-30 15:44:07.000000000 +0200
++++ ./src/servers/vfs/table.c	2012-05-05 19:41:22.000000000 +0200
+@@ -129,6 +129,7 @@
+ 	no_sys,		/* 110 = (getdma) */
+ 	no_sys,		/* 111 = (srv_kill) */
+ 	do_gcov_flush,	/* 112 = gcov_flush */
++	no_sys,         /* 113 = getrlimit */
+ };
+ /* This should not fail with "array size is negative": */
+ extern int dummy[sizeof(call_vec) == NCALLS * sizeof(call_vec[0]) ? 1 : -1];

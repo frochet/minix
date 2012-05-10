@@ -1,2 +1,0 @@
-CPPFLAGS+= -D_MINIX -D_POSIX_SOURCE
-BINDIR?=/usr/sbin

@@ -1,3 +1,4 @@
+
 //
 //  limit.c
 //  minix_system_call
@@ -9,9 +10,10 @@
 #include <stdio.h>
 
 int getrlimit(int resource, struct rlimit *rlim){
+    message m = malloc(sizeof(message));
+    m.m1_i1 = resource;
     switch (resource) {
-        case 0: message m;
-                
+        case 0:
                 _SYSCALL(PM_PROC_LIMIT,RES_LIMIT,&m);
             break;
             

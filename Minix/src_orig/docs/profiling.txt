@@ -1,3 +1,0 @@
-
-To enable procentry(char *name) and procexit(char *name) calls in ack: -Rcem-p
-

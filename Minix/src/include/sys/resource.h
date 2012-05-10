@@ -38,9 +38,8 @@ struct rlimit
 #define RLIMIT_NOFILE	5
 #define RLIMIT_STACK	6
 #define RLIMIT_AS	7
-
-#define RLIM_NLIMITS 8
-int getrlimit(int resource, struct rlimit *rlp);
+#define RLIMIT_NICE     8
+#define RLIM_NLIMITS 9
 
 #endif /* defined(_POSIX_SOURCE) */
 

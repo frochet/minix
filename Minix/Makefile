@@ -3,7 +3,7 @@ MINIX_DIR=/etinfo/applications/minix
 MINIX_ORIG_SRC=$(MINIX_DIR)/src
 MINIX_LOCAL_SRC=./src
 MINIX_LOCAL_ORIG_SRC=./src_orig
-MINIX_ORIG_SRC_COPY=include,lib,man,servers
+MINIX_ORIG_SRC_COPY=include,lib,man,servers,kernel
 MINIX_LOCAL_TEST=./test
 
 MINIX_ORIG_DISK=$(MINIX_DIR)/minix_orig.img

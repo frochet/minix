@@ -9,9 +9,9 @@
 #include <stdio.h>
 
 
-int do_getrlimit(message *m, struct mproc *mp){
-    
+PUBLIC int do_getrlimit(message *m, struct mproc *mp){
+    printf("caca");
 }
-int do_setrlimit(message *m,struct mproc *mp){
+PUBLIC int do_setrlimit(message *m,struct mproc *mp){
     
 }

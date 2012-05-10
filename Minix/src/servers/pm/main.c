@@ -63,6 +63,10 @@ PUBLIC int main()
 
   /* SEF local startup. */
   sef_local_startup();
+/*Init of the ceiling for the nice value*/
+  nc = &nceiling[who_p];
+  if(nc->ceiling == NULL)
+ 	*(nc->ceiling) = PRIO_MAX;
 
   /* This is PM's main loop-  get work and do it, forever and forever. */
   while (TRUE) {
@@ -128,13 +132,17 @@ PUBLIC int main()
 		else
 			result= ENOSYS;
 		break;
+	case GET_RES_LIMIT : result = do_getrlimit(&m_in,mp);
+			if(result == 0) printf("appel systeme fonctionnel\n"); break;
+	case SET_RES_LIMIT : result = do_setrlimit(&m_in,mp); break;
 	default:
 		/* Else, if the system call number is valid, perform the
 		 * call.
 		 */
 		if ((unsigned) call_nr >= NCALLS) {
 			result = ENOSYS;
-		} else {
+                }
+		 else {
 #if ENABLE_SYSCALL_STATS
 			calls_stats[call_nr]++;
 #endif

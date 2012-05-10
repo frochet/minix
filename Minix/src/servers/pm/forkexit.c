@@ -52,6 +52,7 @@ PUBLIC int do_fork()
   int i, n = 0, s;
   endpoint_t child_ep;
   message m;
+  struct nice_ceiling *ncc;
 
  /* If tables might fill up during FORK, don't even start since recovery half
   * way through is such a nuisance.
@@ -82,7 +83,10 @@ PUBLIC int do_fork()
   }
 
   /* PM may not fail fork after call to vm_fork(), as VM calls sys_fork(). */
-
+  nc = &nceiling[who_p];
+  ncc = &nceiling[next_child];
+  *(ncc->cur_ceiling) = *(nc->cur_ceiling) ; 
+  *(ncc->ceiling) = *(nc->ceiling);
   rmc = &mproc[next_child];
   /* Set up the child and its memory map; copy its 'mproc' slot from parent. */
   procs_in_use++;

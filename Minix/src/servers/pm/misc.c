@@ -445,11 +445,13 @@ PUBLIC int do_getsetpriority()
 	 * We have to scale this between MIN_USER_Q and MAX_USER_Q to match
 	 * the kernel's scheduling queues.
 	 */
-
+	nc = &nceiling[arg_who];
+	if(arg_pri > *(nc->cur_ceiling))
+		return(EINVAL);
 	if ((r = sched_nice(rmp, arg_pri)) != OK) {
 		return r;
 	}
-
+	
 	rmp->mp_nice = arg_pri;
 	return(OK);
 }
