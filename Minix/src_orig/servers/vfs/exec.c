@@ -579,7 +579,7 @@ struct fproc *rfp;
   int i;
 
   /* Check the file desriptors one by one for presence of FD_CLOEXEC. */
-  for (i = 0; i < OPEN_MAX; i++)
+  for (i = 0; i < CUSTOM_OPEN_MAX; i++)
 	if ( FD_ISSET(i, &rfp->fp_cloexec_set))
 		(void) close_fd(rfp, i);
 }

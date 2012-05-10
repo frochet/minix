@@ -1,4 +1,4 @@
-/* The <limits.h> header defines some basic sizes, both of the language types 
+ /* The <limits.h> header defines some basic sizes, both of the language types 
  * (e.g., the number of bits in an integer), and of the operating system (e.g.
  * the number of characters in a file name.
  */

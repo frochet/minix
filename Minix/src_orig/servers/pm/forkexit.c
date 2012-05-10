@@ -49,6 +49,7 @@ PUBLIC int do_fork()
   register struct mproc *rmc;	/* pointer to child */
   pid_t new_pid;
   static int next_child;
+    
   int i, n = 0, s;
   endpoint_t child_ep;
   message m;

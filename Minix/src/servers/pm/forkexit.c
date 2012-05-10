@@ -28,7 +28,7 @@
 #include <signal.h>
 #include "mproc.h"
 #include "param.h"
-
+    
 #define LAST_FEW            2	/* last few slots reserved for superuser */
 
 FORWARD _PROTOTYPE (void zombify, (struct mproc *rmp) );
@@ -57,8 +57,8 @@ PUBLIC int do_fork()
   * way through is such a nuisance.
   */
   rmp = mp;
-  if ((procs_in_use == NR_PROCS) || 
-  		(procs_in_use >= NR_PROCS-LAST_FEW && rmp->mp_effuid != 0))
+  if ((procs_in_use == NR_PROCS) || (is_full_limit()) ||
+   		(procs_in_use >= NR_PROCS-LAST_FEW && rmp->mp_effuid != 0))
   {
   	printf("PM: warning, process table is full!\n");
   	return(EAGAIN);
@@ -156,7 +156,7 @@ PUBLIC int do_srv_fork()
   * way through is such a nuisance.
   */
   rmp = mp;
-  if ((procs_in_use == NR_PROCS) || 
+  if ((procs_in_use == NR_PROCS) || is_full_limit() ||
   		(procs_in_use >= NR_PROCS-LAST_FEW && rmp->mp_effuid != 0))
   {
   	printf("PM: warning, process table is full!\n");

@@ -104,3 +104,7 @@ _PROTOTYPE( struct mproc *find_proc, (pid_t lpid)			);
 _PROTOTYPE( int nice_to_priority, (int nice, unsigned *new_q)		);
 _PROTOTYPE( int pm_isokendpt, (int ep, int *proc)			);
 _PROTOTYPE( void tell_vfs, (struct mproc *rmp, message *m_ptr)		);
+
+/* pm_limit.c */
+
+_PROTOTYPE( int is_full_limit, (void) 					);

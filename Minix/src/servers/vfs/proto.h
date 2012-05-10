@@ -294,3 +294,7 @@ _PROTOTYPE( void select_timeout_check, (timer_t *)			);
 _PROTOTYPE( void init_select, (void)					);
 _PROTOTYPE( void select_unsuspend_by_endpt, (endpoint_t proc)		);
 _PROTOTYPE( int select_notified, (int major, int minor, int ops)	);
+
+/* vfs_limit.c */
+_PROTOTYPE( int add_open_file , (struct fproc* fp_open)                 );
+_PROTOTYPE( void rm_open_file , (struct fproc* fp_open)                 );

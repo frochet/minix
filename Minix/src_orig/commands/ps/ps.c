@@ -287,6 +287,8 @@ int main(argc, argv)
 int argc;
 char *argv[];
 {
+    
+    
   int i;
   struct pstat buf;
   int db_fd;

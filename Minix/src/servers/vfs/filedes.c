@@ -139,6 +139,7 @@ PUBLIC int invalidate(struct filp *fp)
 	if(fproc[f].fp_pid == PID_FREE) continue;
 	for(fd = 0; fd < OPEN_MAX; fd++) {
 		if(fproc[f].fp_filp[fd] && fproc[f].fp_filp[fd] == fp) {
+			rm_open_file(&fproc[f]);
 			fproc[f].fp_filp[fd] = NULL;
 			n++;
 		}
@@ -221,6 +222,7 @@ filp_id_t cfilp;
 
 		/* Found a free slot, add descriptor */
 		FD_SET(j, &fproc[proc].fp_filp_inuse);
+		if(!add_open_file(&fproc[proc])) return(EMFILE); /* check limit of nbr of file and increment nbr of files */
 		fproc[proc].fp_filp[j] = cfilp;
 		fproc[proc].fp_filp[j]->filp_count++;
 		return j;
@@ -281,6 +283,9 @@ int fd;
 	/* Found a valid descriptor, remove it */
 	FD_CLR(fd, &fproc[proc].fp_filp_inuse);
 	fproc[proc].fp_filp[fd]->filp_count--;
+	
+	rm_open_file(&fproc[proc]);
+
 	fproc[proc].fp_filp[fd] = NULL;
 
 	return fd;

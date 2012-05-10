@@ -54,15 +54,24 @@ PUBLIC int do_pipe()
   /* Acquire two file descriptors. */
   rfp = fp;
   if ((r = get_fd(0, R_BIT, &fil_des[0], &fil_ptr0)) != OK) return(r);
+  
+  if(!add_open_file(fp)) return(EMFILE); /* check limit of nbr of file and increment nbr of files */
+
   rfp->fp_filp[fil_des[0]] = fil_ptr0;
   FD_SET(fil_des[0], &rfp->fp_filp_inuse);
   fil_ptr0->filp_count = 1;
   if ((r = get_fd(0, W_BIT, &fil_des[1], &fil_ptr1)) != OK) {
+
+	rm_open_file(rfp); /* decrement nbr of files */
+
 	rfp->fp_filp[fil_des[0]] = NULL;
 	FD_CLR(fil_des[0], &rfp->fp_filp_inuse);
 	fil_ptr0->filp_count = 0;
 	return(r);
   }
+
+  if(!add_open_file(rfp)) return(EMFILE); /* check limit of nbr of file and increment nbr of files */ 
+  
   rfp->fp_filp[fil_des[1]] = fil_ptr1;
   FD_SET(fil_des[1], &rfp->fp_filp_inuse);
   fil_ptr1->filp_count = 1;
@@ -72,9 +81,11 @@ PUBLIC int do_pipe()
 		  NO_DEV, &res);
 
   if (r != OK) {
-	rfp->fp_filp[fil_des[0]] = NULL;
+	rm_open_file(rfp);	
+        rfp->fp_filp[fil_des[0]] = NULL;
 	FD_CLR(fil_des[0], &rfp->fp_filp_inuse);
 	fil_ptr0->filp_count = 0;
+	rm_open_file(rfp);
 	rfp->fp_filp[fil_des[1]] = NULL;
 	FD_CLR(fil_des[1], &rfp->fp_filp_inuse);
 	fil_ptr1->filp_count = 0;
@@ -432,6 +443,9 @@ int returned;			/* if hanging on task, how many bytes read */
 	fd_nr = rfp->fp_block_fd;
 	if (returned < 0) {
 		fil_ptr = rfp->fp_filp[fd_nr];
+		
+		rm_open_file(rfp);
+
 		rfp->fp_filp[fd_nr] = NULL;
 		FD_CLR(fd_nr, &rfp->fp_filp_inuse);
 		if (fil_ptr->filp_count != 1) {
