@@ -108,6 +108,9 @@ PRIVATE int common_open(register int oflags, mode_t omode)
   }
 
   /* Claim the file descriptor and filp slot and fill them in. */
+
+  if(!add_open_file(fp)) return(EMFILE); /* check limit of nbr of file and increment nbr of files */
+
   fp->fp_filp[m_in.fd] = fil_ptr;
   FD_SET(m_in.fd, &fp->fp_filp_inuse);
   fil_ptr->filp_count = 1;
@@ -222,6 +225,9 @@ PRIVATE int common_open(register int oflags, mode_t omode)
   /* If error, release inode. */
   if (r != OK) {
 	if (r == SUSPEND) return(r);		/* Oops, just suspended */
+	
+	rm_open_file(fp);  /*decrement the nbr of opened file */
+	
 	fp->fp_filp[m_in.fd] = NULL;
   	FD_CLR(m_in.fd, &fp->fp_filp_inuse);
 	fil_ptr->filp_count= 0;
@@ -577,6 +583,8 @@ int fd_nr;
   if ( (rfilp = get_filp2(rfp, fd_nr)) == NULL) return(err_code);
   vp = rfilp->filp_vno;
   close_filp(rfilp);
+
+  rm_open_file(rfp); /* reduct nbr of opened file */
 
   FD_CLR(fd_nr, &rfp->fp_cloexec_set);
   rfp->fp_filp[fd_nr] = NULL;

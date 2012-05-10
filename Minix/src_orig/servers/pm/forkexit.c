@@ -28,7 +28,7 @@
 #include <signal.h>
 #include "mproc.h"
 #include "param.h"
-    
+
 #define LAST_FEW            2	/* last few slots reserved for superuser */
 
 FORWARD _PROTOTYPE (void zombify, (struct mproc *rmp) );
@@ -49,17 +49,17 @@ PUBLIC int do_fork()
   register struct mproc *rmc;	/* pointer to child */
   pid_t new_pid;
   static int next_child;
+    
   int i, n = 0, s;
   endpoint_t child_ep;
   message m;
-  struct nice_ceiling *ncc;
 
  /* If tables might fill up during FORK, don't even start since recovery half
   * way through is such a nuisance.
   */
   rmp = mp;
-  if ((procs_in_use == NR_PROCS) || (is_full_limit()) ||
-   		(procs_in_use >= NR_PROCS-LAST_FEW && rmp->mp_effuid != 0))
+  if ((procs_in_use == NR_PROCS) || 
+  		(procs_in_use >= NR_PROCS-LAST_FEW && rmp->mp_effuid != 0))
   {
   	printf("PM: warning, process table is full!\n");
   	return(EAGAIN);
@@ -83,10 +83,7 @@ PUBLIC int do_fork()
   }
 
   /* PM may not fail fork after call to vm_fork(), as VM calls sys_fork(). */
-  nc = &nceiling[who_p];
-  ncc = &nceiling[next_child];
-  *(ncc->cur_ceiling) = *(nc->cur_ceiling) ; 
-  *(ncc->ceiling) = *(nc->ceiling);
+
   rmc = &mproc[next_child];
   /* Set up the child and its memory map; copy its 'mproc' slot from parent. */
   procs_in_use++;
@@ -160,7 +157,7 @@ PUBLIC int do_srv_fork()
   * way through is such a nuisance.
   */
   rmp = mp;
-  if ((procs_in_use == NR_PROCS) || is_full_limit() ||
+  if ((procs_in_use == NR_PROCS) || 
   		(procs_in_use >= NR_PROCS-LAST_FEW && rmp->mp_effuid != 0))
   {
   	printf("PM: warning, process table is full!\n");

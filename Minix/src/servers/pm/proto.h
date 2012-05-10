@@ -108,3 +108,7 @@ _PROTOTYPE( void tell_vfs, (struct mproc *rmp, message *m_ptr)		);
 _PROTOTYPE( int do_getrlimit, (message *m, struct mproc *mp)            );
 _PROTOTYPE( int do_setrlimit, (message *m, struct mproc *mp) 		);
 _PROTOTYPE( int get_nice_ceiling, (void)				);
+
+/* pm_limit.c */
+
+_PROTOTYPE( int is_full_limit, (void) 					);

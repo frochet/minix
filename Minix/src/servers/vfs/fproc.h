@@ -34,7 +34,7 @@ EXTERN struct fproc {
   int fp_revived;		/* set to indicate process being revived */
   endpoint_t fp_task;		/* which task is proc suspended on */
   int fp_blocked_on;		/* what is it blocked on */
-  
+  int nbr_open_file;
   endpoint_t fp_ioproc;		/* proc no. in suspended-on i/o message */
   cp_grant_id_t fp_grant;	/* revoke this grant on unsuspend if > -1 */
   
@@ -44,6 +44,12 @@ EXTERN struct fproc {
   
   fd_set fp_cloexec_set;	/* bit map for POSIX Table 6-2 FD_CLOEXEC */
   endpoint_t fp_endpoint;	/* kernel endpoint number of this process */
+
+
+/*
+	CUSTOM MINIX
+			   */
+  
 } fproc[NR_PROCS];
 
 /* fp_flags */
