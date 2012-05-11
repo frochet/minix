@@ -1,0 +1,113 @@
+\documentclass[9pt , a4paper]{article}
+ \usepackage[utf8]{inputenc}
+ \usepackage[french]{babel}
+ \usepackage{amssymb}  %pour utiliser \blacksquare
+ \usepackage{amsmath}
+ \usepackage{amsthm} % theoreme
+ \usepackage[hmargin=2cm,vmargin=3.5cm]{geometry}
+ \usepackage{float} % force une figure de se mettre au bon endroit
+ \usepackage{graphicx}
+ \usepackage{color}
+ \usepackage{enumerate}
+ \usepackage[svgnames]{xcolor}
+\usepackage{listings}
+ \usepackage{pict2e} % permet de dessiner 
+ %\usepackage{hyperref} % permet de rajouter des liens dans le pdf
+ \usepackage{fancyhdr} % relatif au pied de page
+ \pagestyle{fancy} % relatif au pied de page
+ \usepackage{lastpage} % num√©rotation de page
+ \usepackage{textcomp} % copyleft
+ \usepackage{wrapfig} % figure
+ \usepackage{lscape} %format paysage
+ \definecolor{gris}{rgb}{0.95,0.95,0.95}
+ \usepackage{rotating}
+ \graphicspath{{ImagesForLatex/}}
+ \usepackage{xcolor}
+\usepackage{colortbl,hhline}
+\usepackage{subfig}
+\usepackage{url}
+ 	
+	\lstset{numbers=left, tabsize=4, backgroundcolor=\color{gris},
+frame=single, breaklines=true,
+keywordstyle=\color{black},
+stringstyle=\ttfamily,
+framexleftmargin=6mm, xleftmargin=6mm}
+ %tabular
+ \newcolumntype{M}[1]{>{\raggedright}m{#1}}
+ 	
+ % headers et footers
+ \lhead{LINGI1113}
+ \rhead{Projet minix}
+ \cfoot{\thepage\ sur \pageref{LastPage}}
+	
+ % definition du couleurs
+\xdefinecolor{azure}{named}{Azure}
+\xdefinecolor{gray}{named}{Gray}
+  
+ 
+% Redéfinition du premier niveau
+\renewcommand{\theenumi}{{(}\alph{enumi}{)}}
+\renewcommand{\labelenumi}{\theenumi}
+ 
+% Redéfinition du deuxiéme niveau (bloc itemize)
+\renewcommand{\theenumii}{\Alph{enumii}}
+\renewcommand{\labelenumii}{\theenumii}
+
+
+  
+%\paragraph*{Citation}  	  	 
+% \begin{quotation}
+%   $\prec$
+%
+%   $\succ$
+% \end{quotation}
+% Prenom Nom - - - \textsl{titre}
+
+\begin{document}
+  
+  	\begin{titlepage}
+		\begin{center}
+			{\huge \textsc{Projet Minix}}\\
+			\vspace{0.4cm}
+			
+			{\Large {Professeur : xxx \\ \vspace{0.2cm} Assistants : Christophe Paasch et Fabien Duchêne }}\\
+			\vspace{0.6cm}
+			
+			{\Large \textit{ LINGI1113: Système Informatique 2}}\\
+			\vspace{1.2cm}
+
+			\texttt{}\\
+			\vspace{0.2cm}
+			\vspace{0.1cm}
+			{\Large \textbf{Universit\'e Catholique de Louvain}}
+			\vspace{0.7cm}
+
+			\vspace{0.2cm}
+
+			Martin \textsc{Donies} \\
+			Florentin \textsc{Rochet} \\
+			\vspace{0.2cm}
+			2011-2012\\
+		\end{center}
+	\end{titlepage}
+
+	\newpage
+	
+	\section{Introduction}
+	
+	Nous avons réalisé correctement les appels systèmes correspondant aux ressources suivantes : \\
+	
+	\begin{itemize}
+		\item RLIMIT NICE
+		\item RLIMIT NPROC
+		\item RLIMIT NOFILE
+		\item RLIMIT FSIZE \\
+	\end{itemize}
+	
+	Pour faciliter nos explications et votre compréhension de notre Minix modifié, nous allons lister et expliquer dans ce rapport  les éléments du patch généré par la commande make dist.
+	
+	\section{Architecture globale}
+	
+	\section{listing et explications des modifications}
+	
+\end{document}
