@@ -81,6 +81,10 @@ PUBLIC int do_fork()
 	return s;
   }
   /* PM may not fail fork after call to vm_fork(), as VM calls sys_fork(). */
+<<<<<<< HEAD
+
+=======
+>>>>>>> 20269366a606e298c9393047ddb8cbcd138710de
   rmc = &mproc[next_child];
  /* Copy data from parent */
 

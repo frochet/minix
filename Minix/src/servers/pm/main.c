@@ -64,7 +64,7 @@ PUBLIC int main()
   int i;
   /* SEF local startup. */
   sef_local_startup();
-  
+ 
   for(i=0;i<256;i++) {
 	
 	nbr_proc[i] = 0;
@@ -135,15 +135,12 @@ PUBLIC int main()
 		else
 			result= ENOSYS;
 		break;
-<<<<<<< HEAD
-=======
 	/*
  	* Execute do_getrlimit ou do_setrlimit suivant le cas. result contient OK ou une erreur. 
  	* */
 	case GET_RES_LIMIT : result = do_getrlimit(&m_in,mp); setreply(who_p,result); break;
 	case SET_RES_LIMIT : result = do_setrlimit(&m_in,mp); setreply(who_p,result); break;
 	
->>>>>>> 20269366a606e298c9393047ddb8cbcd138710de
 	default:
 		/* Else, if the system call number is valid, perform the
 		 * call.
