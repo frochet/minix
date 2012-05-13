@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  13 MAY 2012 17:12
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  13 MAY 2012 17:58
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -810,129 +810,65 @@ Underfull \hbox (badness 10000) in paragraph at lines 100--101
  []
 
 
-/Users/marty/Documents/Projets/Minix/gitminix/minix/TSWLatexianTemp_minix_rapport.tex:103: LaTeX Error: Environment item ize undefined.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.103 	ize}
-           
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-/Users/marty/Documents/Projets/Minix/gitminix/minix/TSWLatexianTemp_minix_rapport.tex:104: LaTeX Error: Lonely \item--perhaps a missing list environment.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.104 		\item R
-               LIMIT NICE
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-Underfull \hbox (badness 10000) detected at line 104
-[][]
- []
-
-
-/Users/marty/Documents/Projets/Minix/gitminix/minix/TSWLatexianTemp_minix_rapport.tex:105: LaTeX Error: Lonely \item--perhaps a missing list environment.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.105 		\item R
-               LIMIT NPROC
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-Underfull \hbox (badness 10000) detected at line 105
-[][]
- []
-
-
-/Users/marty/Documents/Projets/Minix/gitminix/minix/TSWLatexianTemp_minix_rapport.tex:106: LaTeX Error: Lonely \item--perhaps a missing list environment.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.106 		\item R
-               LIMIT NOFILE
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-Underfull \hbox (badness 10000) detected at line 106
-[][]
- []
-
-
-/Users/marty/Documents/Projets/Minix/gitminix/minix/TSWLatexianTemp_minix_rapport.tex:107: LaTeX Error: Lonely \item--perhaps a missing list environment.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.107 		\item R
-               LIMIT FSIZE \\
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-Underfull \hbox (badness 10000) detected at line 107
-[][]
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 107--108
+Underfull \hbox (badness 10000) in paragraph at lines 106--107
 
  []
 
 
-/Users/marty/Documents/Projets/Minix/gitminix/minix/TSWLatexianTemp_minix_rapport.tex:108: LaTeX Error: \begin{document} ended by \end{itemize}.
+Underfull \hbox (badness 10000) in paragraph at lines 128--129
 
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
+ []
+
+LaTeX Font Info:    Try loading font information for U+msa on input line 130.
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2009/06/22 v3.00 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 130.
+ (/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2009/06/22 v3.00 AMS symbols B
+)
+Underfull \hbox (badness 10000) in paragraph at lines 134--135
+
+ []
+
+
+LaTeX Warning: Reference `LastPage' on page 2 undefined on input line 138.
+
+[2]
+Underfull \hbox (badness 10000) in paragraph at lines 140--143
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 140--143
+
+ []
+
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 144.
+(/usr/local/texlive/2011/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 144.
+LaTeX Font Info:    Try loading font information for OML+cmr on input line 151.
+ (/usr/local/texlive/2011/texmf-dist/tex/latex/base/omlcmr.fd
+File: omlcmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10> not available
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 151.
+)
+! Emergency stop.
+<*> ...nix/minix/TSWLatexianTemp_minix_rapport.tex
                                                   
-l.108 	\end{itemize}
-                    
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
+*** (job aborted, no legal \end found)
 
-AED: lastpage setting LastPage 
-
-LaTeX Warning: Reference `LastPage' on page 2 undefined on input line 126.
-
-[2] (./TSWLatexianTemp_minix_rapport.aux)
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
- ) 
+ 
 Here is how much of TeX's memory you used:
- 7982 strings out of 493633
- 112790 string characters out of 3143378
- 203352 words of memory out of 3000000
- 11130 multiletter control sequences out of 15000+200000
- 7180 words of font info for 26 fonts, out of 3000000 for 9000
+ 8300 strings out of 493633
+ 115789 string characters out of 3143378
+ 292352 words of memory out of 3000000
+ 11430 multiletter control sequences out of 15000+200000
+ 9214 words of font info for 35 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
- 44i,11n,43p,490b,254s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on TSWLatexianTemp_minix_rapport.pdf (3 pages, 80672 bytes).
-PDF statistics:
- 38 PDF objects out of 1000 (max. 8388607)
- 26 compressed objects within 1 object stream
- 0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
-
+ 44i,12n,43p,490b,1699s stack positions out of 5000i,500n,10000p,200000b,50000s
+!  ==> Fatal error occurred, no output PDF file produced!
