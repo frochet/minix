@@ -60,6 +60,12 @@ EXTERN struct mproc {
   endpoint_t mp_scheduler;	/* scheduler endpoint id */
 
   char mp_name[PROC_NAME_LEN];	/* process name */
+  
+  /*CUSTOM CEILING*/
+  int nice_cur_ceiling;
+  int nice_ceiling;
+  int nproc_cur_ceiling;
+  int nproc_ceiling;
 } mproc[NR_PROCS];
 
 /* Flag values */

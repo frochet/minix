@@ -52,7 +52,6 @@ PUBLIC int do_fork()
   int i, n = 0, s;
   endpoint_t child_ep;
   message m;
-  struct nice_ceiling *ncc;
 
  /* If tables might fill up during FORK, don't even start since recovery half
   * way through is such a nuisance.
@@ -81,17 +80,15 @@ PUBLIC int do_fork()
 	printf("PM: vm_fork failed: %d\n", s);
 	return s;
   }
-
   /* PM may not fail fork after call to vm_fork(), as VM calls sys_fork(). */
-  nc = &nceiling[who_p];
-  ncc = &nceiling[next_child];
-  *(ncc->cur_ceiling) = *(nc->cur_ceiling) ; 
-  *(ncc->ceiling) = *(nc->ceiling);
   rmc = &mproc[next_child];
+ /* Copy data from parent */
+
   /* Set up the child and its memory map; copy its 'mproc' slot from parent. */
   procs_in_use++;
   *rmc = *rmp;			/* copy parent's process slot to child's */
   rmc->mp_parent = who_p;			/* record child's parent */
+  rmc->nice_cur_ceiling = rmp->nice_cur_ceiling;
   if (!(rmc->mp_trace_flags & TO_TRACEFORK)) {
 	rmc->mp_tracer = NO_TRACER;		/* no tracer attached */
 	rmc->mp_trace_flags = 0;
@@ -186,8 +183,10 @@ PUBLIC int do_srv_fork()
   rmc = &mproc[next_child];
   /* Set up the child and its memory map; copy its 'mproc' slot from parent. */
   procs_in_use++;
+ /* Copy data from parent */
   *rmc = *rmp;			/* copy parent's process slot to child's */
   rmc->mp_parent = who_p;			/* record child's parent */
+  rmc->nice_cur_ceiling = rmp->nice_cur_ceiling;
   if (!(rmc->mp_trace_flags & TO_TRACEFORK)) {
 	rmc->mp_tracer = NO_TRACER;		/* no tracer attached */
 	rmc->mp_trace_flags = 0;

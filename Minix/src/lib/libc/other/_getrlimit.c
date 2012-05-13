@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 PUBLIC int getrlimit(int resource, struct rlimit *rlim){
+	int r = 0;
 	message m;
 	if(rlim == NULL)
 		return(EFAULT);
@@ -12,13 +13,14 @@ PUBLIC int getrlimit(int resource, struct rlimit *rlim){
 		return(EINVAL);
 	m.m1_i1 = resource;
 	switch (resource) {
-		case RLIMIT_NICE :
-				_syscall(PM_PROC_NR, GET_RES_LIMIT,&m);
-				rlim->rlim_cur = m.m2_l1;
-				rlim->rlim_max = m.m2_l2;	break;
-				printf("resultat de getrlimit %d",m.m2_l1);
-        default:
-            break;
-    }
-   return 0;
+		case RLIMIT_NICE   :  r = _syscall(PM_PROC_NR, GET_RES_LIMIT,&m); break;
+		case RLIMIT_NPROC  :  r = _syscall(PM_PROC_NR, GET_RES_LIMIT,&m); break;
+		case RLIMIT_NOFILE :  r = _syscall(VFS_PROC_NR,GET_RES_LIMIT,&m); break;
+		case RLIMIT_FSIZE  :  r = _syscall(VFS_PROC_NR,GET_RES_LIMIT,&m); break;
+        	default 	   :  r = -1;  			      		  break;
+        }
+	rlim->rlim_cur = m.m2_l1;
+        rlim->rlim_max = m.m2_l2;   
+
+   return (r);
 }

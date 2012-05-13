@@ -12,8 +12,6 @@
 #define PRIO_PGRP	1
 #define PRIO_USER	2
 
-int getpriority(int, int);
-int setpriority(int, int, int);
 
 #ifdef _POSIX_SOURCE
 
@@ -39,7 +37,8 @@ struct rlimit
 #define RLIMIT_STACK	6
 #define RLIMIT_AS	7
 #define RLIMIT_NICE     8
-#define RLIM_NLIMITS 9
+#define RLIMIT_NPROC    9
+#define RLIM_NLIMITS 10
 
 #endif /* defined(_POSIX_SOURCE) */
 

@@ -1,8 +1,8 @@
 # Makefile for Process Manager (PM)
 PROG=	pm
 SRCS=	main.c forkexit.c break.c exec.c time.c alarm.c \
-		limit.c signal.c utility.c table.c trace.c getset.c misc.c \
-		profile.c dma.c mcontext.c schedule.c pm_limit.c
+	rlimit.c signal.c utility.c table.c trace.c getset.c misc.c \
+	profile.c dma.c mcontext.c schedule.c 
 
 DPADD+=	${LIBSYS} ${LIBTIMERS}
 LDADD+=	-lsys -ltimers

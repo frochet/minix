@@ -70,7 +70,7 @@ framexleftmargin=6mm, xleftmargin=6mm}
 			{\huge \textsc{Projet Minix}}\\
 			\vspace{0.4cm}
 			
-			{\Large {Professeur : xxx \\ \vspace{0.2cm} Assistants : Christophe Paasch et Fabien Duchêne }}\\
+			{\Large {Professeur : Marc Lobel \\ \vspace{0.2cm} Assistants : Christophe Paasch et Fabien Duchêne }}\\
 			\vspace{0.6cm}
 			
 			{\Large \textit{ LINGI1113: Système Informatique 2}}\\
@@ -98,16 +98,46 @@ framexleftmargin=6mm, xleftmargin=6mm}
 	Nous avons réalisé correctement les appels systèmes correspondant aux ressources suivantes : \\
 	
 	\begin{itemize}
-		\item RLIMIT NICE
-		\item RLIMIT NPROC
-		\item RLIMIT NOFILE
-		\item RLIMIT FSIZE \\
+		\item RLIMIT\_ NICE
+		\item RLIMIT\_ NPROC
+		\item RLIMIT\_NOFILE
+		\item RLIMIT\_ FSIZE \\
 	\end{itemize}
 	
 	Pour faciliter nos explications et votre compréhension de notre Minix modifié, nous allons lister et expliquer dans ce rapport  les éléments du patch généré par la commande make dist.
 	
 	\section{Architecture globale}
 	
+	
 	\section{listing et explications des modifications}
 	
+	Voici pour commencer l'implémentation des appels systèmes demandés.\\
+	\begin{lstlisting}														 
+	diff -urN --exclude .svn --exclude '*~' ./src_orig/lib/libc/other/_getrlimit.c ./src/lib/libc/other/_getrlimit.c
+	--- ./src_orig/lib/libc/other/_getrlimit.c      1970-01-01 01:00:00.000000000 +0100
+	+++ ./src/lib/libc/other/_getrlimit.c   2012-05-11 20:09:56.000000000 +0200
+	\end{lstlisting}
+	Code correspondant à la fonction getrlimit(int resource, struct rlimit* rlim). \\ 
+	\begin{lstlisting}
+	diff -urN --exclude .svn --exclude '*~' ./src_orig/lib/libc/other/_setrlimit.c ./src/lib/libc/other/_setrlimit.c
+	--- ./src_orig/lib/libc/other/_setrlimit.c      1970-01-01 01:00:00.000000000 +0100
+	+++ ./src/lib/libc/other/_setrlimit.c   2012-05-11 23:52:15.000000000 +0200
+	\end{lstlisting}
+	Code correspondant à la fonction setrlimit(int resource, struct rlimit* rlim) \\
+	Ces appels systèmes permettent de contacter le serveur pm et le serveur vfs. On va donc lister les différences dans ces 	deux serveurs en commençant par le server pm. 
+	\\ \\
+	\begin{lstlisting}
+	Binary files ./src_orig/servers/pm/a.out and ./src/servers/pm/a.out differ\\
+	diff -urN --exclude .svn --exclude '*~' ./src_orig/servers/pm/forkexit.c ./src/servers/pm/forkexit.c\\
+	--- ./src_orig/servers/pm/forkexit.c    2010-07-02 14:41:19.000000000 +0200\\
+	+++ ./src/servers/pm/forkexit.c 2012-05-13 11:36:49.000000000 +0200\\ 
+	\end{lstlisting}
+	\begin{lstlisting}
+	-  if ((procs_in_use == NR_PROCS) || 
+	-               (procs_in_use >= NR_PROCS-LAST_FEW && rmp->mp_effuid != 0))
+	+  if ((procs_in_use == NR_PROCS) || (is_full_limit()) || 
+	+               (procs_in_use >= NR_PROCS-LAST_FEW && rmp->mp_effuid != 0))
+    	 \end{lstlisting}
+
+	Ce code permet de vérifier si la limite du nombre de process est atteinte. Elle est vérifiée durant un fork. la méthode is\_full\_limit() est implémentée dans pm/rlimit.c
 \end{document}

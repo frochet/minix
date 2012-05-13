@@ -35,6 +35,10 @@ EXTERN struct fproc {
   endpoint_t fp_task;		/* which task is proc suspended on */
   int fp_blocked_on;		/* what is it blocked on */
   int nbr_open_file;
+  int fopen_cur_ceiling;
+  int fopen_hard_ceiling;
+  int fsize_cur_ceiling;
+  int fsize_hard_ceiling;
   endpoint_t fp_ioproc;		/* proc no. in suspended-on i/o message */
   cp_grant_id_t fp_grant;	/* revoke this grant on unsuspend if > -1 */
   
