@@ -9,7 +9,6 @@ EXTERN struct mproc *mp;	/* ptr to 'mproc' slot of current process */
 EXTERN int procs_in_use;	/* how many processes are marked as IN_USE */
 EXTERN char monitor_params[128*sizeof(char *)];	/* boot monitor parameters */
 EXTERN struct kinfo kinfo;	/* kernel information */
-EXTERN struct nice_ceiling *nc;        /* struct contains var for nice; setpriority limits*/
 
 /* Misc.c */
 extern struct utsname uts_val;	/* uname info */
@@ -26,4 +25,5 @@ EXTERN sigset_t noign_sset;	/* which signals cannot be ignored */
 
 EXTERN u32_t system_hz;		/* System clock frequency. */
 EXTERN int abort_flag;
-EXTERN char monitor_code[256];		
+EXTERN char monitor_code[256];
+EXTERN int nbr_proc[256];		

@@ -193,7 +193,7 @@ PUBLIC int do_truncate()
  */
   struct vnode *vp;
   int r;
-
+  if (is_too_big(m_in.flength,0)) return(EFBIG);
   if ((off_t) m_in.flength < 0) return(EINVAL);
 
   /* Temporarily open file */
@@ -218,7 +218,7 @@ PUBLIC int do_ftruncate()
   struct filp *rfilp;
   
   if ((off_t) m_in.flength < 0) return(EINVAL);
-
+  if (is_too_big(m_in.flength,0)) return(EFBIG);
   /* File is already opened; get a vnode pointer from filp */
   if ((rfilp = get_filp(m_in.m2_i1)) == NULL) return(err_code);
   if (!(rfilp->filp_mode & W_BIT)) return(EBADF);

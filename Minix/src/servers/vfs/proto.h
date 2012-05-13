@@ -298,3 +298,4 @@ _PROTOTYPE( int select_notified, (int major, int minor, int ops)	);
 /* vfs_limit.c */
 _PROTOTYPE( int add_open_file , (struct fproc* fp_open)                 );
 _PROTOTYPE( void rm_open_file , (struct fproc* fp_open)                 );
+_PROTOTYPE( int is_too_big , (int fsize, int nbr_bytes)			);

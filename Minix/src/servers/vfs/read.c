@@ -63,7 +63,8 @@ int rw_flag;			/* READING or WRITING */
   vp = f->filp_vno;
   r = OK;
   cum_io = 0;
-
+  
+  
   if (vp->v_pipe == I_PIPE) {
 	if (fp->fp_cum_io_partial != 0) {
 		panic("read_write: fp_cum_io_partial not clear");
@@ -107,6 +108,9 @@ int rw_flag;			/* READING or WRITING */
 		cum_io += res_cum_io;
 	}
   } else {				/* Regular files */
+	/* implementation of FSIZE LIMIT */
+	if (is_too_big(vp->v_size,m_in.nbytes) && (rw_flag == WRITING)) return(EFBIG);
+	
 	if (rw_flag == WRITING && block_spec == 0) {
 		/* Check for O_APPEND flag. */
 		if (oflags & O_APPEND) position = cvul64(vp->v_size);

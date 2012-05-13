@@ -62,7 +62,6 @@ SRCS+=  \
 	isatty.S \
 	kill.S \
 	killpg.S \
-	getrlimit.S \
 	link.S \
 	lseek.S \
 	lseek64.S \
@@ -102,7 +101,6 @@ SRCS+=  \
 	setgid.S \
 	setgroups.S \
 	setitimer.S \
-	setrlimit.S \
 	setsid.S \
 	setuid.S \
 	sigaction.S \

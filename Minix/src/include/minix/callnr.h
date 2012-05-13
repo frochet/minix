@@ -1,4 +1,4 @@
-#define NCALLS	115	 	/* number of system calls allowed */
+#define NCALLS		 113	/* number of system calls allowed */
 
 #define EXIT		   1 
 #define FORK		   2 
@@ -115,8 +115,6 @@
 
 #define GCOV_FLUSH	112	/* flush gcov data from server to gcov files */
 
-#define GET_RES_LIMIT   113     
-#define SET_RES_LIMIT   114 
 #define TASK_REPLY	121	/* to VFS: reply code from drivers, not 
 				 * really a standalone call.
 				 */

@@ -26,4 +26,3 @@
 #include "type.h"
 #include "proto.h"
 #include "glo.h"
-#include "data_syscall.h"
