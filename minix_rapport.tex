@@ -1,4 +1,4 @@
-\documentclass[9pt , a4paper]{report}
+\documentclass[9pt , a4paper]{article}
  \usepackage[utf8]{inputenc}
  \usepackage[french]{babel}
  \usepackage{amssymb}  %pour utiliser \blacksquare
@@ -92,9 +92,7 @@ framexleftmargin=6mm, xleftmargin=6mm}
 	\end{titlepage}
 
 	\newpage
-
-	\tableofcontents
-	\newpage
+	
 	\section{Introduction}
 	
 	Nous avons réalisé correctement les appels systèmes correspondant aux ressources suivantes : \\
@@ -109,19 +107,7 @@ framexleftmargin=6mm, xleftmargin=6mm}
 	Pour faciliter nos explications et votre compréhension de notre Minix modifié, nous allons lister et expliquer dans ce rapport  les éléments du patch généré par la commande make dist.
 	
 	\section{Architecture globale}
-	\section{Implémentation des limites}
-	\subsection{RLIMIT\_NICE}
-	\subsection{RLIMIT\_NPROC}
-	\subsection{RLIMIT\_FSIZE}
-	Pour être certain que la limite à la taille des fichiers ne soit jamais dépassée, nous vérifions à chaque appel de write que la somme de la taille du fichier actuel. Pour la fonction truncate, nous observons simplement la taille à la quelle le processus souhaite tronquer le fichier. 
 	
-	Pour gérer l'erreur, nous envoyons un signal SIGXFSZ que nous avons ajouté dans include/signal.h. De cette façon, si le processus gère le signal, il pourra continuer à s'exécuter et l'appel système retournera une erreur EFBIG. Si il ne le gère pas, le processus sera arrêté de force.
-
-	\subsection{RLIMIT\_NOFILE}
-	
-	Pour gérer cette limite, nous avons implémenté un compteur qui compte le nombre de file descriptor liés au processus.  Il aurait été plus simple et moins risqué de vérifier le nombre de fichiers ouverts dans la fonction get\_fd(). Mais nous serions passés d'une complexité temporelle en O(1) à O(n) (où n représente la taille du tableau contenant les file descriptors). 
-	
-	En début de projet, nous envisagions d'enlevé les limites définies par les constantes de minix pour les remplacer par un système de. ainsi les tableaux auraient été adaptés aux limites parametrées par setrlimit().  
 	
 	\section{listing et explications des modifications}
 	
@@ -154,3 +140,5 @@ framexleftmargin=6mm, xleftmargin=6mm}
     	 \end{lstlisting}
 
 	Ce code permet de vérifier si la limite du nombre de process est atteinte. Elle est vérifiée durant un fork. la méthode is\_full\_limit() est implémentée dans pm/rlimit.c
+	
+\end{document}
