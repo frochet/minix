@@ -64,12 +64,16 @@ PUBLIC int main()
   int i;
   /* SEF local startup. */
   sef_local_startup();
+<<<<<<< HEAD
   
   for(i=0;i<256;i++) {
 	
 	nbr_proc[i] = 0;
 	
   }
+=======
+	
+>>>>>>> 20269366a606e298c9393047ddb8cbcd138710de
   /* This is PM's main loop-  get work and do it, forever and forever. */
   while (TRUE) {
 	  int ipc_status;
@@ -134,6 +138,15 @@ PUBLIC int main()
 		else
 			result= ENOSYS;
 		break;
+<<<<<<< HEAD
+=======
+	/*
+ 	* Execute do_getrlimit ou do_setrlimit suivant le cas. result contient OK ou une erreur. 
+ 	* */
+	case GET_RES_LIMIT : result = do_getrlimit(&m_in,mp); setreply(who_p,result); break;
+	case SET_RES_LIMIT : result = do_setrlimit(&m_in,mp); setreply(who_p,result); break;
+	
+>>>>>>> 20269366a606e298c9393047ddb8cbcd138710de
 	default:
 		/* Else, if the system call number is valid, perform the
 		 * call.
@@ -208,6 +221,10 @@ PRIVATE int sef_cb_init_fresh(int type, sef_init_info_t *info)
   /* Initialize process table, including timers. */
   for (rmp=&mproc[0]; rmp<&mproc[NR_PROCS]; rmp++) {
 	init_timer(&rmp->mp_timer);
+	rmp->nice_cur_ceiling = 0;
+	rmp->nice_ceiling = PRIO_MAX-1;
+	rmp->nproc_cur_ceiling = 200;
+	rmp->nproc_ceiling = NR_PROCS;
   }
 
   /* Build the set of signals which cause core dumps, and the set of signals
@@ -369,7 +386,8 @@ PRIVATE void sendreply()
       /* In the meantime, the process may have been killed by a
        * signal (e.g. if a lethal pending signal was unblocked)
        * without the PM realizing it. If the slot is no longer in
-       * use or the process is exiting, don't try to reply.
+
+	       * use or the process is exiting, don't try to reply.
        */
       if ((rmp->mp_flags & (REPLY | IN_USE | EXITING)) ==
           (REPLY | IN_USE)) {

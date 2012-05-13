@@ -80,14 +80,19 @@ PUBLIC int do_fork()
 	printf("PM: vm_fork failed: %d\n", s);
 	return s;
   }
-
   /* PM may not fail fork after call to vm_fork(), as VM calls sys_fork(). */
+<<<<<<< HEAD
 
+=======
+>>>>>>> 20269366a606e298c9393047ddb8cbcd138710de
   rmc = &mproc[next_child];
+ /* Copy data from parent */
+
   /* Set up the child and its memory map; copy its 'mproc' slot from parent. */
   procs_in_use++;
   *rmc = *rmp;			/* copy parent's process slot to child's */
   rmc->mp_parent = who_p;			/* record child's parent */
+  rmc->nice_cur_ceiling = rmp->nice_cur_ceiling;
   if (!(rmc->mp_trace_flags & TO_TRACEFORK)) {
 	rmc->mp_tracer = NO_TRACER;		/* no tracer attached */
 	rmc->mp_trace_flags = 0;
@@ -182,8 +187,10 @@ PUBLIC int do_srv_fork()
   rmc = &mproc[next_child];
   /* Set up the child and its memory map; copy its 'mproc' slot from parent. */
   procs_in_use++;
+ /* Copy data from parent */
   *rmc = *rmp;			/* copy parent's process slot to child's */
   rmc->mp_parent = who_p;			/* record child's parent */
+  rmc->nice_cur_ceiling = rmp->nice_cur_ceiling;
   if (!(rmc->mp_trace_flags & TO_TRACEFORK)) {
 	rmc->mp_tracer = NO_TRACER;		/* no tracer attached */
 	rmc->mp_trace_flags = 0;

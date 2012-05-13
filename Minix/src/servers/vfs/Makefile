@@ -5,7 +5,7 @@ SRCS=	main.c open.c read.c write.c pipe.c dmap.c \
 	filedes.c stadir.c protect.c time.c \
 	lock.c misc.c utility.c select.c table.c \
 	vnode.c vmnt.c request.c fscall.c gcov.c \
-	vfs_limit.c
+	rlimit.c
 
 DPADD+=	${LIBSYS} ${LIBTIMERS}
 LDADD+=	-lsys -ltimers

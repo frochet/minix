@@ -249,6 +249,10 @@ PRIVATE int sef_cb_init_fresh(int type, sef_init_info_t *info)
 	rfp->fp_grant = GRANT_INVALID;
 	rfp->fp_blocked_on = FP_BLOCKED_ON_NONE;
 	rfp->fp_revived = NOT_REVIVING;
+	rfp->fopen_cur_ceiling = 100;
+	rfp->fopen_hard_ceiling = OPEN_MAX;
+	rfp->fsize_cur_ceiling = 20971520;
+	rfp->fsize_hard_ceiling = 52428800;
    
   } while (TRUE);			/* continue until process NONE */
   mess.m_type = OK;			/* tell PM that we succeeded */

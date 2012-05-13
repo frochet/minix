@@ -104,8 +104,17 @@ _PROTOTYPE( struct mproc *find_proc, (pid_t lpid)			);
 _PROTOTYPE( int nice_to_priority, (int nice, unsigned *new_q)		);
 _PROTOTYPE( int pm_isokendpt, (int ep, int *proc)			);
 _PROTOTYPE( void tell_vfs, (struct mproc *rmp, message *m_ptr)		);
+<<<<<<< HEAD
 
 /* pm_limit.c */
 
 _PROTOTYPE( int is_full_limit, (void) 					);
 _PROTOTYPE( void rm_nbr_proc, (void)					);
+=======
+/* limit.c */
+_PROTOTYPE( int do_getrlimit, (message *m, struct mproc *mp)            );
+_PROTOTYPE( int do_setrlimit, (message *m, struct mproc *mp) 		);
+_PROTOTYPE( int get_nice_ceiling, (void)				);
+_PROTOTYPE( int is_full_limit, (void) 					);
+_PROTOTYPE( int rlimit_nice,(int arg_pri, int arg_who)			);
+>>>>>>> 20269366a606e298c9393047ddb8cbcd138710de
