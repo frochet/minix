@@ -4,6 +4,7 @@
 #include "fproc.h"
 #include <sys/resource.h>
 #include <minix/ipc.h>
+#include <signal.h>
 
 int add_open_file(struct fproc* fp)
 {
@@ -17,10 +18,27 @@ int add_open_file(struct fproc* fp)
 
 void rm_open_file(struct fproc* fp) 
 {
-
+    
 	fp->nbr_open_file--;
-
+    
 }
+
+int is_too_big(int fsize, int nbr_byts) {
+    
+	int pid;
+	int fsize_max;
+	fp = &fproc[who_p];
+    fsize_max = fp->fsize_cur_ceiling;
+	pid = fp->fp_pid;
+	
+	if((fsize + nbr_byts) >= fsize_max){ 
+		printf("trying to kill proc no %d ",pid);
+		kill(pid,SIGXFSZ);
+		return 1;
+	}	
+	else return 0;
+}
+
 
 PUBLIC int do_getrlimit(){
 	struct fproc *fp = &fproc[who_p];

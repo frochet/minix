@@ -76,14 +76,23 @@ PUBLIC int get_nice_ceiling(){
 	return mp->nice_cur_ceiling;
 }
 
+
+void rm_nbr_proc() {
+    
+	mp = &mproc[who_p];
+    nbr_proc[mp->mp_realuid]--;
+    
+}
+
 int is_full_limit()
 {
-	int nbr_proc_limit;
-	mp =  &mproc[who_p];
-        nbr_proc_limit = mp->nproc_cur_ceiling;
+    int nbr_proc_limit;
+    mp =  &mproc[who_p];
+    nbr_proc_limit = mp->nproc_cur_ceiling;
+    nbr_proc[mp->mp_realuid]++;
+    if( nbr_proc[mp->mp_realuid] <= nbr_proc_limit)        	return 0;
+    else                                                    return 1;
 
-        if( procs_in_use <= nbr_proc_limit)        return 0;
-        else                                       return 1;
 
 }
 
