@@ -1,4 +1,4 @@
-\documentclass[9pt , a4paper]{article}
+\documentclass[9pt , a4paper]{report}
  \usepackage[utf8]{inputenc}
  \usepackage[french]{babel}
  \usepackage{amssymb}  %pour utiliser \blacksquare
@@ -92,7 +92,9 @@ framexleftmargin=6mm, xleftmargin=6mm}
 	\end{titlepage}
 
 	\newpage
-	
+
+	\tableofcontents
+	\newpage
 	\section{Introduction}
 	
 	Nous avons réalisé correctement les appels systèmes correspondant aux ressources suivantes : \\
@@ -107,7 +109,19 @@ framexleftmargin=6mm, xleftmargin=6mm}
 	Pour faciliter nos explications et votre compréhension de notre Minix modifié, nous allons lister et expliquer dans ce rapport  les éléments du patch généré par la commande make dist.
 	
 	\section{Architecture globale}
+	\section{Implémentation des limites}
+	\subsection{RLIMIT\_NICE}
+	\subsection{RLIMIT\_NPROC}
+	\subsection{RLIMIT\_FSIZE}
+	Pour être certain que la limite à la taille des fichiers ne soit jamais dépassée, nous vérifions à chaque appel de write que la somme de la taille du fichier actuel. Pour la fonction truncate, nous observons simplement la taille à la quelle le processus souhaite tronquer le fichier. 
 	
+	Pour gérer l'erreur, nous envoyons un signal SIGXFSZ que nous avons ajouté dans include/signal.h. De cette façon, si le processus gère le signal, il pourra continuer à s'exécuter et l'appel système retournera une erreur EFBIG. Si il ne le gère pas, le processus sera arrêté de force.
+
+	\subsection{RLIMIT\_NOFILE}
+	
+	Pour gérer cette limite, nous avons implémenté un compteur qui compte le nombre de file descriptor liés au processus.  Il aurait été plus simple et moins risqué de vérifier le nombre de fichiers ouverts dans la fonction get\_fd(). Mais nous serions passés d'une complexité temporelle en O(1) à O(n) (où n représente la taille du tableau contenant les file descriptors). 
+	
+	En début de projet, nous envisagions d'enlevé les limites définies par les constantes de minix pour les remplacer par un système de. ainsi les tableaux auraient été adaptés aux limites parametrées par setrlimit().  
 	
 	\section{listing et explications des modifications}
 	
@@ -127,18 +141,138 @@ framexleftmargin=6mm, xleftmargin=6mm}
 	Ces appels systèmes permettent de contacter le serveur pm et le serveur vfs. On va donc lister les différences dans ces 	deux serveurs en commençant par le server pm. 
 	\\ \\
 	\begin{lstlisting}
-	Binary files ./src_orig/servers/pm/a.out and ./src/servers/pm/a.out differ\\
-	diff -urN --exclude .svn --exclude '*~' ./src_orig/servers/pm/forkexit.c ./src/servers/pm/forkexit.c\\
-	--- ./src_orig/servers/pm/forkexit.c    2010-07-02 14:41:19.000000000 +0200\\
-	+++ ./src/servers/pm/forkexit.c 2012-05-13 11:36:49.000000000 +0200\\ 
-	\end{lstlisting}
-	\begin{lstlisting}
+	diff -urN --exclude .svn --exclude '*~' ./src_orig/servers/pm/forkexit.c ./src/servers/pm/forkexit.c
+	--- ./src_orig/servers/pm/forkexit.c    2010-07-02 14:41:19.000000000 +0200
+	+++ ./src/servers/pm/forkexit.c 2012-05-13 11:36:49.000000000 +0200
+
 	-  if ((procs_in_use == NR_PROCS) || 
 	-               (procs_in_use >= NR_PROCS-LAST_FEW && rmp->mp_effuid != 0))
 	+  if ((procs_in_use == NR_PROCS) || (is_full_limit()) || 
 	+               (procs_in_use >= NR_PROCS-LAST_FEW && rmp->mp_effuid != 0))
     	 \end{lstlisting}
 
-	Ce code permet de vérifier si la limite du nombre de process est atteinte. Elle est vérifiée durant un fork. la méthode is\_full\_limit() est implémentée dans pm/rlimit.c
+	Ce code permet de vérifier si la limite du nombre de process est atteinte. Elle est vérifiée durant un fork. la méthode is\_full	\_limit() est implémentée dans pm/rlimit.c
 	
+	\begin{lstlisting}
+	diff -urN --exclude .svn --exclude '*~' ./src_orig/servers/pm/main.c ./src/servers/pm/main.c
+	--- ./src_orig/servers/pm/main.c        2010-07-13 17:30:17.000000000 +0200	
+	+++ ./src/servers/pm/main.c     2012-05-13 19:08:44.000000000 +0200
+	
+	+       /*
+	+       * Execute do_getrlimit ou do_setrlimit suivant le cas. result contient OK ou une erreur. 
+	+       * */
+	+       case GET_RES_LIMIT : result = do_getrlimit(&m_in,mp); setreply(who_p,result); break;
+	+       case SET_RES_LIMIT : result = do_setrlimit(&m_in,mp); setreply(who_p,result); break;
+	+       
+	. 
+	.(etc)
+	.
+	  /* Initialize process table, including timers. */
+	   for (rmp=&mproc[0]; rmp<&mproc[NR_PROCS]; rmp++) {
+      	  init_timer(&rmp->mp_timer);
+	+       rmp->nice_cur_ceiling = 0;
+	+       rmp->nice_ceiling = PRIO_MAX-1;
+	+       rmp->nproc_cur_ceiling = 200;
+	+       rmp->nproc_ceiling = NR_PROCS-1;
+   	}
+	     
+	\end{lstlisting}
+	Les cas GET\_RES\_LIMIT et SET\_RES\_LIMIT du switch permettent de catcher l'appel système envoyé par 		\_getrlimit.c et 	\_setrlimit.c. Cela n'est pas obligatoire étant donné que le fichier table.c permet de faire un appel automatique si call\_nr 	arrive dans le default du switch. Nous l'avons fait ici pour pouvoir utiliser setreply et renvoyer le résultat à la fonction	 appelante (0 ou une erreur)
+	
+	La suite du code (avec la boucle for) permet l'initialisation des variables que nous avons rajouté dans la structure 			mproc. nice\_cur\_ceiling et nproc\_cur\_ceiling représentent la rlim\_cur pour leur syscall respectif, nice\_ceiling et 		nproc\_ceiling la rlimit\_max. Le choix de l'initialisation est arbitraire, tout en restant logique.
+	
+		\begin{lstlisting}
+	diff -urN --exclude .svn --exclude '*~' ./src_orig/servers/pm/misc.c ./src/servers/pm/misc.c
+	--- ./src_orig/servers/pm/misc.c        2010-07-02 14:41:19.000000000 +0200
+	+++ ./src/servers/pm/misc.c     2012-05-13 19:08:44.000000000 +0200
+	@@ -446,6 +446,9 @@
+         * the kernel's scheduling queues.
+         */
+
++       /* handle de nice value limit*/
++       if(rlimit_nice(arg_pri,arg_who) == EINVAL)
++               return(EINVAL);
+        if ((r = sched_nice(rmp, arg_pri)) != OK) {
+                return r;
+        }
+	\end{lstlisting}
+	rlimit\_nice est une fonction déclarée dans rlimit.c, elle permet de vérifier que la nice value respecte les bornes lorsqu'elle est modifiée. Si non, on retourne EINVAL
+\begin{lstlisting}
++++ ./src/servers/pm/rlimit.c   2012-05-13 19:08:44.000000000 +0200
+\end{lstlisting}
+
+Fichier important où l'on a implémenté do\_getrlimit, do\_setrlimit et différentes autres fonction pour le bon fonctionnement de nos modifications dans le process manager. Un fichier rlimit.c est également présent dans le serveur vfs et remplis un rôle identique.
+
+Passons maintenant aux modifications dans le serveur vfs. 
+\begin{lstlisting}
+diff -urN --exclude .svn --exclude '*~' ./src_orig/servers/vfs/filedes.c ./src/servers/vfs/filedes.c
+--- ./src_orig/servers/vfs/filedes.c    2010-08-30 15:44:07.000000000 +0200
++++ ./src/servers/vfs/filedes.c 2012-05-13 19:08:43.000000000 +0200
+@@ -139,6 +139,7 @@
+        if(fproc[f].fp_pid == PID_FREE) continue;
+        for(fd = 0; fd < OPEN_MAX; fd++) {
+                if(fproc[f].fp_filp[fd] && fproc[f].fp_filp[fd] == fp) {
++                       rm_open_file(&fproc[f]);
+                        fproc[f].fp_filp[fd] = NULL;
+                        n++;
+                }
+@@ -221,6 +222,7 @@
+
+                /* Found a free slot, add descriptor */
+                FD_SET(j, &fproc[proc].fp_filp_inuse);
++               if(!add_open_file(&fproc[proc])) return(EMFILE); /* check limit of nbr of file and increment nbr of files */
+                fproc[proc].fp_filp[j] = cfilp;
+                fproc[proc].fp_filp[j]->filp_count++;
+                return j;
+@@ -281,6 +283,9 @@
+        /* Found a valid descriptor, remove it */
+        FD_CLR(fd, &fproc[proc].fp_filp_inuse);
+        fproc[proc].fp_filp[fd]->filp_count--;
++       
++       rm_open_file(&fproc[proc]);
++
+        fproc[proc].fp_filp[fd] = NULL;
+
+        return fd;
+\end{lstlisting}
+
+rm\_open\_file(struct froc *) est une fonction déclaré dans vfs/rlimit.c qui permet de décrementer le compteur utilisé pour le nombre de file descriptor. add\_open\_file(struct froc*) quant à elle incrémente le même compteur lorsque qu'un nouveau file descriptor est créé. Elle permet aussi de vérifier que la limite (déclarée dans fproc) n'est pas dépassée.
+Ces fonctions sont utilisées ailleurs avec la même logique. Les autres localisations sont données dans le patch et ne seront pas détaillé dans ce rapport.
+
+\begin{lstlisting}
+diff -urN --exclude .svn --exclude '*~' ./src_orig/servers/vfs/link.c ./src/servers/vfs/link.c
+--- ./src_orig/servers/vfs/link.c       2010-08-30 15:44:07.000000000 +0200
++++ ./src/servers/vfs/link.c    2012-05-13 19:08:43.000000000 +0200
+@@ -193,7 +193,7 @@
+  */
+   struct vnode *vp;
+   int r;
+-
++  if (is_too_big(m_in.flength,0)) return(EFBIG);
+   if ((off_t) m_in.flength < 0) return(EINVAL); 
+\end{lstlisting}
+La function is\_too\_big permet de vérifier la limite imposée pour la taille des fichiers (limite déclarer dans fproc)
+Cette fonction est utilisée a d'autres avec la même logique. Ceux-ci peuvent être retrouvé dans le patch et ne seront donc pas détaillé dans ce rapport.
+\begin{lstlisting}
+diff -urN --exclude .svn --exclude '*~' ./src_orig/servers/vfs/main.c ./src/servers/vfs/main.c
+--- ./src_orig/servers/vfs/main.c       2010-07-22 16:55:28.000000000 +0200
++++ ./src/servers/vfs/main.c    2012-05-13 19:08:43.000000000 +0200
+@@ -249,6 +249,10 @@
+        rfp->fp_grant = GRANT_INVALID;
+        rfp->fp_blocked_on = FP_BLOCKED_ON_NONE;
+        rfp->fp_revived = NOT_REVIVING;
++       rfp->fopen_cur_ceiling = 100;
++       rfp->fopen_hard_ceiling = OPEN_MAX;
++       rfp->fsize_cur_ceiling = 20971520;
++       rfp->fsize_hard_ceiling = 52428800;
+
+\end{lstlisting}
+
+Initialisation des différentes limites dans la structures fproc. Ces limites sont données arbitrairement, tout en faisant attention qu'elles ne provoquent pas d'erreur systèmes (plafond trop bas pour fsize par exemple)
+
+\begin{lstlisting}
++++ ./src/servers/vfs/rlimit.c  2012-05-13 19:08:43.000000000 +0200
+\end{lstlisting}
+Fichier important, tout comme dans le serveur pm, il contient l'implémentation de do\_getrlimit et do\_setrlimit ainsi que d'autres fonction nécessaire au bon fonctionnement de l'imposition des limites.
+
 \end{document}
