@@ -446,9 +446,12 @@ PUBLIC int do_getsetpriority()
 	 * the kernel's scheduling queues.
 	 */
 
+<<<<<<< HEAD
+=======
 	/* handle de nice value limit*/
 	if(rlimit_nice(arg_pri,arg_who) == EINVAL)
 		return(EINVAL);
+>>>>>>> 20269366a606e298c9393047ddb8cbcd138710de
 	if ((r = sched_nice(rmp, arg_pri)) != OK) {
 		return r;
 	}

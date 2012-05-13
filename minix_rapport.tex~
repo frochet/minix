@@ -99,11 +99,20 @@ framexleftmargin=6mm, xleftmargin=6mm}
 	
 	Nous avons réalisé correctement les appels systèmes correspondant aux ressources suivantes : \\
 	
+<<<<<<< HEAD
+	\begin{item
+	ize}
+		\item RLIMIT NICE
+		\item RLIMIT NPROC
+		\item RLIMIT NOFILE
+		\item RLIMIT FSIZE \\
+=======
 	\begin{itemize}
 		\item RLIMIT\_ NICE
 		\item RLIMIT\_ NPROC
 		\item RLIMIT\_NOFILE
 		\item RLIMIT\_ FSIZE \\
+>>>>>>> 20269366a606e298c9393047ddb8cbcd138710de
 	\end{itemize}
 	
 	Pour faciliter nos explications et votre compréhension de notre Minix modifié, nous allons lister et expliquer dans ce rapport  les éléments du patch généré par la commande make dist.
@@ -119,9 +128,12 @@ framexleftmargin=6mm, xleftmargin=6mm}
 
 	\subsection{RLIMIT\_NOFILE}
 	
+<<<<<<< HEAD
 	Pour gérer cette limite, nous avons implémenté un compteur qui compte le nombre de file descriptor liés au processus.  Il aurait été plus simple et moins risqué de vérifier le nombre de fichiers ouverts dans la fonction get\_fd(). Mais nous serions passés d'une complexité temporelle en O(1) à O(n) (où n représente la taille du tableau contenant les file descriptors). 
 	
 	En début de projet, nous envisagions d'enlevé les limites définies par les constantes de minix pour les remplacer par un système de. ainsi les tableaux auraient été adaptés aux limites parametrées par setrlimit().  
+\end{document}
+=======
 	
 	\section{listing et explications des modifications}
 	
@@ -154,3 +166,5 @@ framexleftmargin=6mm, xleftmargin=6mm}
     	 \end{lstlisting}
 
 	Ce code permet de vérifier si la limite du nombre de process est atteinte. Elle est vérifiée durant un fork. la méthode is\_full\_limit() est implémentée dans pm/rlimit.c
+\end{document}
+>>>>>>> 20269366a606e298c9393047ddb8cbcd138710de

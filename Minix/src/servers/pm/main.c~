@@ -64,13 +64,16 @@ PUBLIC int main()
   int i;
   /* SEF local startup. */
   sef_local_startup();
+<<<<<<< HEAD
   
   for(i=0;i<256;i++) {
 	
 	nbr_proc[i] = 0;
 	
   }
+=======
 	
+>>>>>>> 20269366a606e298c9393047ddb8cbcd138710de
   /* This is PM's main loop-  get work and do it, forever and forever. */
   while (TRUE) {
 	  int ipc_status;
